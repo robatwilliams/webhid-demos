@@ -1,3 +1,5 @@
+import { RAINBOW, OFF, WHITE } from './colors.js';
+
 // These IDs appear to be shared by all BlinkStick products.
 // This demo is for the 8-LED Strip (https://www.blinkstick.com/products/blinkstick-strip)
 // https://github.com/arvydas/blinkstick-node/blob/master/blinkstick.js#L22
@@ -5,24 +7,13 @@ const vendorId = 0x20a0;
 const productId = 0x41e5;
 
 const LED_COUNT = 8;
-const COLORS_RAINBOW = [
-  [148, 0, 211],
-  [75, 0, 130],
-  [0, 0, 255],
-  [0, 255, 0],
-  [255, 255, 0],
-  [255, 127, 0],
-  [255, 0, 0],
-];
-const COLOR_WHITE = [255, 255, 255];
 
 document.querySelector('button').addEventListener('click', handleClick);
 
 async function handleClick() {
   const device = await getOpenedDevice();
 
-  for (let ledIndex = 0; ledIndex < LED_COUNT; ledIndex++) {
-    const color = COLORS_RAINBOW[ledIndex] || COLOR_WHITE;
+  for (let [ledIndex, color] of nextColorArrangement().entries()) {
     await setColor(device, ledIndex, color);
   }
 }
@@ -55,3 +46,24 @@ async function setColor(device, index, [r, g, b]) {
     console.error(`Failed to set color at index ${index}`, error);
   }
 }
+
+const nextColorArrangement = (() => {
+  const arrangements = [
+    slots(WHITE),
+    slots(i => (i % 2 === 0 ? WHITE : OFF)),
+    slots(i => (i % 2 !== 0 ? WHITE : OFF)),
+    slots(i => RAINBOW[i] || WHITE),
+    slots(i => RAINBOW[RAINBOW.length - i] || WHITE),
+    ...RAINBOW.map(slots),
+    slots(OFF),
+  ];
+
+  let nextIndex = 0;
+  return () => arrangements[nextIndex++ % arrangements.length];
+
+  function slots(color) {
+    return Array.from({ length: LED_COUNT }).map((_, i) =>
+      typeof color === 'function' ? color(i) : color
+    );
+  }
+})();
