@@ -53,15 +53,23 @@ async function setColor(device, index, [r, g, b], retries = 1) {
 
 const nextColorArrangement = (() => {
   const arrangements = [
+    // Brightness
     slots(WHITE),
     slots(shade(WHITE, 0.5)),
     slots(shade(WHITE, 0.25)),
     slots(shade(WHITE, 0.1)),
+
+    // Individual control
     slots(i => (i % 2 === 0 ? WHITE : OFF)),
     slots(i => (i % 2 !== 0 ? WHITE : OFF)),
+
+    // Rainbow both directions
     slots(i => RAINBOW[i] || WHITE),
     slots(i => RAINBOW[RAINBOW.length - i] || WHITE),
+
+    // Individual colours
     ...RAINBOW.map(slots),
+
     slots(OFF),
   ];
 
