@@ -35,7 +35,7 @@ async function getOpenedDevice() {
   return device;
 }
 
-async function setColor(device, index, [r, g, b]) {
+async function setColor(device, index, [r, g, b], retries = 1) {
   // Info gleaned from https://github.com/arvydas/blinkstick-node/blob/master/blinkstick.js#L429
   const reportId = 5;
   const data = Int8Array.from([reportId, index, r, g, b]);
@@ -43,7 +43,11 @@ async function setColor(device, index, [r, g, b]) {
   try {
     await device.sendFeatureReport(reportId, data);
   } catch (error) {
-    console.error(`Failed to set color at index ${index}`, error);
+    if (retries > 0) {
+      setColor(device, index, [r, g, b], retries--);
+    } else {
+      console.error(`Failed to set color at index ${index}`, error);
+    }
   }
 }
 
