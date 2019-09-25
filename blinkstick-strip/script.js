@@ -1,4 +1,4 @@
-import { RAINBOW, OFF, WHITE } from './colors.js';
+import { RAINBOW, OFF, WHITE, shade } from './colors.js';
 
 // These IDs appear to be shared by all BlinkStick products.
 // This demo is for the 8-LED Strip (https://www.blinkstick.com/products/blinkstick-strip)
@@ -54,6 +54,9 @@ async function setColor(device, index, [r, g, b], retries = 1) {
 const nextColorArrangement = (() => {
   const arrangements = [
     slots(WHITE),
+    slots(shade(WHITE, 0.5)),
+    slots(shade(WHITE, 0.25)),
+    slots(shade(WHITE, 0.1)),
     slots(i => (i % 2 === 0 ? WHITE : OFF)),
     slots(i => (i % 2 !== 0 ? WHITE : OFF)),
     slots(i => RAINBOW[i] || WHITE),
