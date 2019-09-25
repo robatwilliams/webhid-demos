@@ -16,7 +16,7 @@ const COLORS_RAINBOW = [
 ];
 const COLOR_WHITE = [255, 255, 255];
 
-document.querySelector("button").addEventListener("click", handleClick);
+document.querySelector('button').addEventListener('click', handleClick);
 
 async function handleClick() {
   const device = await getOpenedDevice();
@@ -29,13 +29,11 @@ async function handleClick() {
 
 async function getOpenedDevice() {
   const devices = await navigator.hid.getDevices();
-  let device = devices.find(
-    d => d.vendorId === vendorId && d.productId === productId
-  );
+  let device = devices.find(d => d.vendorId === vendorId && d.productId === productId);
 
   if (!device) {
     device = await navigator.hid.requestDevice({
-      filters: [{ vendorId, productId }]
+      filters: [{ vendorId, productId }],
     });
   }
 
