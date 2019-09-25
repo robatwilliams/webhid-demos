@@ -4,12 +4,27 @@
 const vendorId = 0x20a0;
 const productId = 0x41e5;
 
+const LED_COUNT = 8;
+const COLORS_RAINBOW = [
+  [148, 0, 211],
+  [75, 0, 130],
+  [0, 0, 255],
+  [0, 255, 0],
+  [255, 255, 0],
+  [255, 127, 0],
+  [255, 0, 0],
+];
+const COLOR_WHITE = [255, 255, 255];
+
 document.querySelector("button").addEventListener("click", handleClick);
 
 async function handleClick() {
   const device = await getOpenedDevice();
 
-  setColor(device, 0, [255, 0, 0]);
+  for (let ledIndex = 0; ledIndex < LED_COUNT; ledIndex++) {
+    const color = COLORS_RAINBOW[ledIndex] || COLOR_WHITE;
+    await setColor(device, ledIndex, color);
+  }
 }
 
 async function getOpenedDevice() {
@@ -31,16 +46,14 @@ async function getOpenedDevice() {
   return device;
 }
 
-function setColor(device, index, [r, g, b]) {
+async function setColor(device, index, [r, g, b]) {
   // Info gleaned from https://github.com/arvydas/blinkstick-node/blob/master/blinkstick.js#L429
   const reportId = 5;
   const data = Int8Array.from([reportId, index, r, g, b]);
 
-  return device.sendFeatureReport(reportId, data);
-}
-
-function getRandomInt(minInclusive, maxExclusive) {
-  return (
-    Math.floor(Math.random() * (maxExclusive - minInclusive)) + minInclusive
-  );
+  try {
+    await device.sendFeatureReport(reportId, data);
+  } catch (error) {
+    console.error(`Failed to set color at index ${index}`, error);
+  }
 }
