@@ -44,7 +44,7 @@ async function setColor(device, index, [r, g, b], retries = 1) {
     await device.sendFeatureReport(reportId, data);
   } catch (error) {
     if (retries > 0) {
-      setColor(device, index, [r, g, b], --retries);
+      await setColor(device, index, [r, g, b], --retries);
     } else {
       console.error(`Failed to set color at index ${index}`, error);
     }
