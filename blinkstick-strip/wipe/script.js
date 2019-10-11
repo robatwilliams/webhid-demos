@@ -92,12 +92,14 @@ async function clear(device) {
 
 function* wipe() {
   while (true) {
+    // Spread to the right
     for (let i = 0; i < LED_COUNT; i++) {
       yield [i, RED];
       yield 150;
     }
 
-    for (let i = LED_COUNT - 1; i >= 0; i--) {
+    // Collapse to the right
+    for (let i = 0; i < LED_COUNT; i++) {
       yield [i, OFF];
       yield 150;
     }
