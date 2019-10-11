@@ -36,6 +36,11 @@ async function getOpenedDevice() {
 }
 
 async function setColor(device, index, [r, g, b], retries = 1) {
+  // Limit the brightness (still bright!); at some higher level it starts getting stuck on (overheating?)
+  r *= 0.5;
+  g *= 0.5;
+  b *= 0.5;
+
   // Info gleaned from https://github.com/arvydas/blinkstick-node/blob/master/blinkstick.js#L429
   const reportId = 5;
   const data = Int8Array.from([reportId, index, r, g, b]);
