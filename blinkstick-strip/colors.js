@@ -11,6 +11,8 @@ export const RAINBOW = [
   [255, 0, 0],
 ];
 
+export const [VIOLET, INDIGO, BLUE, GREEN, YELLOW, ORANGE, RED] = RAINBOW;
+
 export function shade(color, factor) {
   return color.map(component => component * factor);
 }
